@@ -1,0 +1,7 @@
+.nx
+.vite
+.yarn
+bin
+lib
+node_modules
+out
