@@ -90,11 +90,11 @@ export default function Repl() {
     } else {
       setInvalidInput(inputValue);
     }
-  }, []);
+  }, [sessionId]);
 
   const handleEvalInteraction = useCallback(() => {
     void handleEval();
-  }, []);
+  }, [handleEval]);
 
   const handleArrowUpKey = useCallback(() => {
     if (isInputEmpty()) {

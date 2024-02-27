@@ -7,6 +7,7 @@ module.exports = {
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
     "plugin:eslint-comments/recommended",
+    "plugin:react-hooks/recommended",
   ],
   plugins: ["@typescript-eslint", "eslint-comments", "react-refresh", "simple-import-sort"],
   parser: "@typescript-eslint/parser",

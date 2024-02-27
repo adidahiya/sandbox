@@ -48,7 +48,7 @@ const ReplInput = forwardRef<ReplInputHandle, ReplInputProps>((props, ref) => {
         });
       }
     },
-    [props.onEnterKeyDown],
+    [props],
   );
 
   const invisibleInput = (
@@ -77,7 +77,7 @@ const ReplInput = forwardRef<ReplInputHandle, ReplInputProps>((props, ref) => {
     return () => {
       document.removeEventListener("mousedown", handleDocumentMouseDown);
     };
-  }, []);
+  }, [handleDocumentMouseDown]);
 
   // TODO: uncomment to capture focus on mount
   // useEffect(focusInput, []);

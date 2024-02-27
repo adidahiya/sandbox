@@ -33,74 +33,76 @@ export interface ReplInputProps {
   onArrowDownKeyDown: () => void;
 }
 
-const ReplInputWithMonaco = forwardRef<ReplInputHandle, ReplInputProps>((props, ref) => {
-  const [editorHeightInRem, setEditorHeightInRem] = useState(5);
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+const ReplInputWithMonaco = forwardRef<ReplInputHandle, ReplInputProps>(
+  ({ onArrowDownKeyDown, onArrowUpKeyDown, onEnterKeyDown }, ref) => {
+    const [editorHeightInRem, setEditorHeightInRem] = useState(5);
+    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
-  const handleEnterCommand = useCallback(() => {
-    // services available in `ctx`
-    props.onEnterKeyDown();
+    const handleEnterCommand = useCallback(() => {
+      // services available in `ctx`
+      onEnterKeyDown();
 
-    // HACKHACK: wait until next frame to clear the input
-    setTimeout(() => {
-      editorRef.current?.setValue("");
-    });
-  }, [props.onEnterKeyDown]);
+      // HACKHACK: wait until next frame to clear the input
+      setTimeout(() => {
+        editorRef.current?.setValue("");
+      });
+    }, [onEnterKeyDown]);
 
-  // TODO: fix, this callback is not being called
-  const handleShiftEnterCommand = useCallback(() => {
-    setEditorHeightInRem((prevHeight) => prevHeight + 1);
-  }, []);
+    // TODO: fix, this callback is not being called
+    const handleShiftEnterCommand = useCallback(() => {
+      setEditorHeightInRem((prevHeight) => prevHeight + 1);
+    }, []);
 
-  const focusInput = useCallback(() => {
-    editorRef.current?.focus();
-  }, []);
+    const focusInput = useCallback(() => {
+      editorRef.current?.focus();
+    }, []);
 
-  const handleEditorMount = (editor: editor.IStandaloneCodeEditor) => {
-    editorRef.current = editor;
-    editor.addCommand(KeyCode.Enter & KeyCode.Shift, handleShiftEnterCommand);
-    editor.addCommand(KeyCode.Enter, handleEnterCommand);
-    editor.addCommand(KeyCode.UpArrow, props.onArrowUpKeyDown);
-    editor.addCommand(KeyCode.DownArrow, props.onArrowDownKeyDown);
-  };
-
-  // TODO: uncomment to capture focus on mount
-  // useEffect(focusInput, []);
-
-  useImperativeHandle(ref, () => {
-    return {
-      focusInput,
-      getInputValue: () => editorRef.current?.getValue() ?? "",
-      setInputValue: (value: string) => {
-        if (editorRef.current == null) {
-          return;
-        }
-
-        editorRef.current.setValue(value);
-
-        // move cursor to end of input
-        const lineCount = editorRef.current.getModel()?.getLineCount() ?? 1;
-        const lineLength = editorRef.current.getModel()?.getLineMaxColumn(lineCount) ?? 1;
-        editorRef.current.setPosition({
-          lineNumber: lineCount,
-          column: lineLength,
-        });
-      },
+    const handleEditorMount = (editor: editor.IStandaloneCodeEditor) => {
+      editorRef.current = editor;
+      editor.addCommand(KeyCode.Enter & KeyCode.Shift, handleShiftEnterCommand);
+      editor.addCommand(KeyCode.Enter, handleEnterCommand);
+      editor.addCommand(KeyCode.UpArrow, onArrowUpKeyDown);
+      editor.addCommand(KeyCode.DownArrow, onArrowDownKeyDown);
     };
-  });
 
-  return (
-    <div className={styles.replContents}>
-      <Editor
-        defaultLanguage="javascript"
-        defaultValue=""
-        height={`${editorHeightInRem}rem`}
-        onMount={handleEditorMount}
-        options={MONACO_EDITOR_OPTIONS}
-      />
-    </div>
-  );
-});
+    // TODO: uncomment to capture focus on mount
+    // useEffect(focusInput, []);
+
+    useImperativeHandle(ref, () => {
+      return {
+        focusInput,
+        getInputValue: () => editorRef.current?.getValue() ?? "",
+        setInputValue: (value: string) => {
+          if (editorRef.current == null) {
+            return;
+          }
+
+          editorRef.current.setValue(value);
+
+          // move cursor to end of input
+          const lineCount = editorRef.current.getModel()?.getLineCount() ?? 1;
+          const lineLength = editorRef.current.getModel()?.getLineMaxColumn(lineCount) ?? 1;
+          editorRef.current.setPosition({
+            lineNumber: lineCount,
+            column: lineLength,
+          });
+        },
+      };
+    });
+
+    return (
+      <div className={styles.replContents}>
+        <Editor
+          defaultLanguage="javascript"
+          defaultValue=""
+          height={`${editorHeightInRem}rem`}
+          onMount={handleEditorMount}
+          options={MONACO_EDITOR_OPTIONS}
+        />
+      </div>
+    );
+  },
+);
 ReplInputWithMonaco.displayName = "ReplInputWithMonaco";
 
 export default ReplInputWithMonaco;
