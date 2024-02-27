@@ -3,3 +3,4 @@
 /.yarn
 **/dist
 **/lib
+vite.config.ts

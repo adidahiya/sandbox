@@ -12,7 +12,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ["./packages/*/tsconfig.json"],
+    project: ["./tsconfig.json"],
   },
   rules: {
     "@typescript-eslint/consistent-type-exports": [
@@ -37,10 +37,7 @@ module.exports = {
     // we don't have to declare the CLI flag in every package's `package.json`. We can switch to
     // `linterOptions.reportUnusedDisableDirectives` in ESLint v9.0
     "eslint-comments/no-unused-disable": "error",
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
   },

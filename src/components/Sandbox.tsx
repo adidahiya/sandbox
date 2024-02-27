@@ -1,5 +1,6 @@
-import Counter from "./Counter";
 import "./Sandbox.css";
+
+import Counter from "./Counter";
 
 export default function Sandbox() {
   return (

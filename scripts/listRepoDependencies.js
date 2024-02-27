@@ -1,5 +1,6 @@
 // @ts-check
 
+import console from "node:console";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
