@@ -23,6 +23,9 @@ export interface ReplInputProps {
   onEnterKeyDown: () => void;
 }
 
+/**
+ * Old version of the input which uses a standard <input> element.
+ */
 const ReplInput = forwardRef<ReplInputHandle, ReplInputProps>((props, ref) => {
   const [userInput, setUserInput] = useState("");
   const [hasFocus, setHasFocus] = useState(false);

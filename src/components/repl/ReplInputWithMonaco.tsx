@@ -33,16 +33,25 @@ export interface ReplInputProps {
   onArrowDownKeyDown: () => void;
 }
 
+/**
+ * Newer version of the REPL input which uses a monaco-editor for some UI conveniences:
+ * - syntax highlighting
+ * - syntax errors
+ *
+ * Auto-completion is currently disabled, but this is something we could add by hooking
+ * into monaco's suggestion APIs.
+ */
 const ReplInputWithMonaco = forwardRef<ReplInputHandle, ReplInputProps>(
   ({ onArrowDownKeyDown, onArrowUpKeyDown, onEnterKeyDown }, ref) => {
     const [editorHeightInRem, setEditorHeightInRem] = useState(5);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
     const handleEnterCommand = useCallback(() => {
-      // services available in `ctx`
       onEnterKeyDown();
 
-      // HACKHACK: wait until next frame to clear the input
+      // slightly hacky: wait until next frame to clear the input so that
+      // our parent component has a chance to read the editor value to fire off the
+      // eval request
       setTimeout(() => {
         editorRef.current?.setValue("");
       });
@@ -64,9 +73,6 @@ const ReplInputWithMonaco = forwardRef<ReplInputHandle, ReplInputProps>(
       editor.addCommand(KeyCode.UpArrow, onArrowUpKeyDown);
       editor.addCommand(KeyCode.DownArrow, onArrowDownKeyDown);
     };
-
-    // TODO: uncomment to capture focus on mount
-    // useEffect(focusInput, []);
 
     useImperativeHandle(ref, () => {
       return {

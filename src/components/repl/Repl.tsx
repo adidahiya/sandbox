@@ -153,7 +153,8 @@ export default function Repl() {
       </SectionCard>
       {invalidInput && (
         <SectionCard className={styles.replErrorCard} title="Error">
-          <span>Syntax Error while evaluating</span> <Code>{invalidInput}</Code>
+          <p>Syntax Error while evaluating input:</p>
+          <pre className={Classes.CODE_BLOCK}>{invalidInput}</pre>
         </SectionCard>
       )}
     </Section>
