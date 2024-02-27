@@ -1,5 +1,6 @@
 import { AnchorButton, Button, ButtonGroup, Divider } from "@blueprintjs/core";
 
+import { API_URL_BASE } from "../../common/constants";
 import styles from "./Repl.module.scss";
 
 interface ReplActionsProps {
@@ -19,7 +20,7 @@ export default function ReplActions(props: ReplActionsProps) {
       />
       <Divider />
       <AnchorButton
-        href="https://ae04d9fe-19fc-41ab-a709-91816ad49dbc-00-1i6iw8qsyrty4.worf.repl.co/api-docs/"
+        href={`${API_URL_BASE}/api-docs/`}
         target="_blank"
         minimal={true}
         rightIcon="share"
