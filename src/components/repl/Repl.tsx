@@ -37,6 +37,7 @@ export default function Repl() {
   }, []);
 
   const [history, setHistory] = useState<ReplHistoryEntry[]>(INITIAL_REPL_HISTORY);
+  const latestCommand = useRef(history.at(-1));
 
   const [sessionId, setSessionId] = useState(getSessionId);
   const handleResetSession = useCallback(() => {
@@ -80,13 +81,12 @@ export default function Repl() {
       console.log("eval response:", evalResponse);
 
       setInvalidInput(null);
-      setHistory((prevHistory) => [
-        ...prevHistory,
-        {
-          input: inputValue,
-          output: evalResponse,
-        },
-      ]);
+      const newHistoryEntry = {
+        input: inputValue,
+        output: evalResponse,
+      };
+      setHistory((prevHistory) => [...prevHistory, newHistoryEntry]);
+      latestCommand.current = newHistoryEntry;
     } else {
       setInvalidInput(inputValue);
     }
@@ -96,15 +96,16 @@ export default function Repl() {
     void handleEval();
   }, [handleEval]);
 
-  const handleArrowUpKey = useCallback(() => {
+  // HACKHACK: useCallback isn't interacting well with monaco-editor here
+  const handleArrowUpKey = () => {
     if (isInputEmpty()) {
       // get the previous history entry
-      const lastHistoryEntry = history.at(-1);
+      const lastHistoryEntry = latestCommand.current;
       if (lastHistoryEntry !== undefined) {
         inputRef.current?.setInputValue(lastHistoryEntry.input);
       }
     }
-  }, [history, isInputEmpty]);
+  };
 
   const handleArrowDownKey = useCallback(() => {
     // TODO
