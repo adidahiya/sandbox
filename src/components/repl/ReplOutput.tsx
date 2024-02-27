@@ -100,7 +100,49 @@ function ReplOutputValue({ depth, evalResponse, serialized }: ReplOutputValuePro
 }
 
 function ReplOutputString({ serialized }: { serialized: StringSerialized }) {
+  const [didValidateImage, setDidValidateImage] = useState(false);
+  const [isImageValid, setIsImageValid] = useState(false);
+
+  const isImageDataString = serialized.value.startsWith("data:image/");
+  const isImageURL = serialized.value.startsWith("http") && hasImageFileExtension(serialized.value);
+  const shouldCheckIfStringIsImage = isImageDataString || isImageURL;
+
+  const handleImageLoad = useCallback(() => {
+    setIsImageValid(true);
+    setDidValidateImage(true);
+  }, []);
+
+  const handleImageError = useCallback(() => {
+    setIsImageValid(false);
+    setDidValidateImage(true);
+  }, []);
+
+  if (didValidateImage && isImageValid) {
+    return <img src={serialized.value} />;
+  }
+
+  if (shouldCheckIfStringIsImage && !didValidateImage) {
+    // validate the image src
+    return (
+      <span>
+        Loading...
+        <img src={serialized.value} onLoad={handleImageLoad} onError={handleImageError} />
+      </span>
+    );
+  }
+
   return <span>"{serialized.value}"</span>;
+}
+
+const COMMON_IMAGE_FORMATS = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "ico", "svg", "tiff"];
+
+function hasImageFileExtension(url: string): boolean {
+  for (const format of COMMON_IMAGE_FORMATS) {
+    if (url.endsWith("." + format)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function ReplOutputNumber({ serialized }: { serialized: NumberSerialized }) {
