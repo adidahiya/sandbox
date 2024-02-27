@@ -118,7 +118,7 @@ function ReplOutputString({ serialized }: { serialized: StringSerialized }) {
   }, []);
 
   if (didValidateImage && isImageValid) {
-    return <img src={serialized.value} />;
+    return <img className={styles.replOutputStringImage} src={serialized.value} />;
   }
 
   if (shouldCheckIfStringIsImage && !didValidateImage) {
